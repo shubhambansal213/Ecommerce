@@ -1,0 +1,37 @@
+# Build folders
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# VS Code
+.vscode/
+
+# Rider / IntelliJ
+.idea/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# NuGet packages
+*.nupkg
+
+# Test results
+TestResults/
+
+# Environment files
+.env
+
+# Coverage files
+coverage/
+
+# Temporary files
+*.tmp
+*.cache
