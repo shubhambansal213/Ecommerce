@@ -43,10 +43,35 @@ namespace Catalog.Infrastructure
             return await _brands.Find(b=>b.Id==brandId).FirstOrDefaultAsync();
         }
 
-        public Task<Pagination<Product>> GetProduct(CatalogSpecParams specParams)
+        public async Task<Pagination<Product>> GetProduct(CatalogSpecParams catalogSpecParams)
         {
-            throw new NotImplementedException();
+            var builder=Builders<Product>.Filter;
+            var filter=builder.Empty;
+
+            if (!string.IsNullOrEmpty(catalogSpecParams.Search))
+            {
+                filter&=builder.Where(p=>p.Name.ToLower().Contains(catalogSpecParams.Search.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(catalogSpecParams.BrnadId))
+            {
+                filter&=builder.Eq(p=>p.Brand.Id,catalogSpecParams.BrnadId);
+            }
+             if (!string.IsNullOrEmpty(catalogSpecParams.TYpeId))
+            {
+                filter&=builder.Eq(p=>p.Brand.Id,catalogSpecParams.TYpeId);
+            }
+
+            var totalIteam=await _products.CountDocumentsAsync(filter);
+            var data=await ApplyDataFilters(catalogSpecParams,filter);
+            return new Pagination<Product>(
+                catalogSpecParams.PageIndex,
+                catalogSpecParams.PageSize,
+                (int)totalIteam,
+                data
+            );
         }
+
+      
 
         public async Task<IEnumerable<Product>> GetProductByBrand(string name)
         {
@@ -74,6 +99,30 @@ namespace Catalog.Infrastructure
         {
             var updateProduct=await _products.ReplaceOneAsync(x=>x.Id==product.Id,product);
             return updateProduct.IsAcknowledged && updateProduct.ModifiedCount>0;
+        }
+
+        private async Task<IReadOnlyCollection<Product>> ApplyDataFilters(CatalogSpecParams catalogSpecParams, FilterDefinition<Product> filter)
+        {
+            var softDefn=Builders<Product>.Sort.Ascending("Name");
+
+            if (!string.IsNullOrEmpty(catalogSpecParams.Sort))
+            {
+                softDefn=catalogSpecParams.Sort switch
+                {
+                    "priceAsc"=>Builders<Product>.Sort.Ascending(p=>p.Price),
+                    "priceDsc"=>Builders<Product>.Sort.Descending(p=>p.Price),
+
+                    _=>Builders<Product>.Sort.Ascending(p=>p.Name),
+
+                };
+            }
+
+            return await _products
+            .Find(filter)
+            .Sort(softDefn)
+            .Skip(catalogSpecParams.PageSize*(catalogSpecParams.PageIndex))
+            .Limit(catalogSpecParams.PageSize)
+            .ToListAsync();
         }
     }
 }
