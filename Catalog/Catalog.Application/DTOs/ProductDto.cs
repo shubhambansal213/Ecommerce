@@ -1,0 +1,45 @@
+using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace Catalog.Application
+{
+    public record ProductDto(
+        string Id,
+        string Name,
+        string Sumamry,
+        string ImageFile,
+        BrandDto Brand,
+        TypeDto Type,
+        decimal Price,
+        DateTimeOffset CreatedDate
+    );
+
+    public record BrandDto(string Id,string Name);
+
+    public record TypeDto(string Id,string Name);
+
+    public record class CreateProduct
+    {
+        [Required]
+        public string Name{get;init;}
+
+        [Required]
+        public string Sumary{get;init;}
+
+        [Required]
+        public string Description{get;init;}
+
+        [Required]
+        public string ImageFile{get;init;}
+
+        [Required]
+        public string BrandId{get;init;}
+
+        [Required]
+        public string TypeId{get;init;}
+
+        [Range(0.01,double.MaxValue,ErrorMessage ="Price must be greater then 0")]
+        public string Price{get;init;}
+
+    }
+}
