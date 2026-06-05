@@ -33,6 +33,11 @@ namespace Catalog.Application.Mappers
             products.Count,
             products.Data.Select(p=>p.ToResponse()).ToList()
         );
+
+        public static IList<ProductResponse> ToResponseList(this IEnumerable<Product> products)
+        {
+            return products.Select(p=>p.ToResponse()).ToList();
+        }
         
     }
 }
