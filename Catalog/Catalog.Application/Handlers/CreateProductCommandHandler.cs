@@ -15,7 +15,7 @@ namespace Catalog.Application.Handlers
 
         public CreateProductCommandHandler(IProductRepository productRepository)
         {
-            productRepository=_productRepository
+            productRepository=_productRepository;
         }
 
         public async Task<ProductResponse> Handle(CreateProductCommand request, CancellationToken cancellationToken)
