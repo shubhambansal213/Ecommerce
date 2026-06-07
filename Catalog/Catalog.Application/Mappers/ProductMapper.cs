@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Catalog.Application.Commands;
 using Catalog.Core;
 
 namespace Catalog.Application.Mappers
@@ -38,6 +39,19 @@ namespace Catalog.Application.Mappers
         {
             return products.Select(p=>p.ToResponse()).ToList();
         }
+
+        public static Product ToEntity(this CreateProductCommand command,ProductBrand brand,ProductType type)=>
+        new Product
+        {
+          Name=command.Name,
+          Summary=command.Summary,
+          Description=command.Description,
+          ImageFile=command.ImageFile,
+          Brand=brand,
+          Type=type,
+          Price=command.Price,
+          CreatedDate=DateTimeOffset.UtcNow  
+        };
         
     }
 }
