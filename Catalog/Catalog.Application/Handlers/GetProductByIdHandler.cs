@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Catalog.Application.Mappers;
 using Catalog.Application.Queries;
 using Catalog.Core;
 using MediatR;
@@ -19,7 +20,7 @@ namespace Catalog.Application.Handlers
 
         public async Task<ProductResponse> Handle(GetProductByIdQuery request, CancellationToken cancellationToken)
         {
-            var product = await _productRepository.GetProduct(request.Id);
+            var product = await _productRepository.GetProductById(request.Id);
             var productResponse=product.ToResponse();
             return productResponse;
         }
