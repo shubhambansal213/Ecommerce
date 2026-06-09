@@ -52,6 +52,21 @@ namespace Catalog.Application.Mappers
           Price=command.Price,
           CreatedDate=DateTimeOffset.UtcNow  
         };
+
+        public static Product ToUpdateEntiy(this UpdateProductCommand command,Product existing,ProductBrand brand,ProductType type)
+        {
+            return new Product
+             {
+              Id=existing.Id,
+              Name=command.Name,
+              Summary=command.Summary,
+              ImageFile=command.ImageFile,
+              Brand=brand,
+              Type=type,
+              Price=command.Price,
+              CreatedDate=existing.CreatedDate  
+            };
+        }
         
     }
 }
