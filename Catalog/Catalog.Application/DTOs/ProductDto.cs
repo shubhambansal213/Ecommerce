@@ -7,6 +7,7 @@ namespace Catalog.Application
         string Id,
         string Name,
         string Sumamry,
+        string Description,
         string ImageFile,
         BrandDto Brand,
         TypeDto Type,
