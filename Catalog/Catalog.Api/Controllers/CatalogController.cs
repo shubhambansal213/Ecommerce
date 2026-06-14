@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Catalog.Application;
+using Catalog.Application.Commands;
 using Catalog.Application.Mappers;
-using Catalog.Application.Queries;
+using Catalog.Application.Queries;      
 using Catalog.Core;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -51,5 +52,37 @@ namespace Catalog.Api.Controllers
             var dtoList=result.Select(p=>p.ToDto()).ToList();
             return Ok(dtoList);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<ProductDto>> CreateProduct([FromBody] CreateProductCommand command)
+        {
+            var result=await _mediator.Send(command);
+            return Ok(result);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteProduct(string id)
+        {
+            var command=new DeleteProductByIdCommand(id);
+            var result=await _mediator.Send(command);
+            if (!result)
+            {
+                return NotFound();
+            }
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+            public async Task<IActionResult> UpdateProduct(string id,UpdateProductDto updateProductDto)
+            {
+                var command=updateProductDto.ToCommand(id);
+                var result=await _mediator.Send(command);
+                if (!result)
+                {
+                    return NotFound();
+                }
+                return NoContent();
+            }
+
     }
 }
