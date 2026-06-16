@@ -74,16 +74,41 @@ namespace Catalog.Api.Controllers
         }
 
         [HttpPut("{id}")]
-            public async Task<IActionResult> UpdateProduct(string id,UpdateProductDto updateProductDto)
+        public async Task<IActionResult> UpdateProduct(string id,UpdateProductDto updateProductDto)
+        {
+            var command=updateProductDto.ToCommand(id);
+            var result=await _mediator.Send(command);
+            if (!result)
             {
-                var command=updateProductDto.ToCommand(id);
-                var result=await _mediator.Send(command);
-                if (!result)
-                {
-                    return NotFound();
-                }
-                return NoContent();
+                return NotFound();
             }
+            return NoContent();
+        }
 
+        [HttpGet("GetAllBrands")]
+        public async Task<ActionResult<IEnumerable<BrandDto>>> GetBrands()
+        {
+            var query=new GetAllBrandsQueries();
+            var result=await _mediator.Send(query);
+            return Ok(result);
+        }
+
+        [HttpGet("GetAllTypes")]
+        public async Task<ActionResult<IEnumerable<TypeDto>>> GetTypes()
+        {
+            var query=new GetAllTypesQuery();
+            var result=await _mediator.Send(query);
+            return Ok(result);
+        }
+
+        [HttpGet("/brand/{brand}",Name="GetProductsByBrandName")]
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetProductsByBrand(string brand)
+        {
+            var query=new GetProductsByBrandQuery(brand);
+            var result=await _mediator.Send(query);
+            return Ok(result);
+        }
     }
 }
+
+
