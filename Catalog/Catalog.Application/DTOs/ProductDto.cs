@@ -19,7 +19,7 @@
 
         public record TypeDto(string Id,string Name);
 
-        public record class CreateProduct
+        public record class CreateProductDto
         {
             [Required]
             public string Name{get;init;}
@@ -40,7 +40,7 @@
             public string TypeId{get;init;}
 
             [Range(0.01,double.MaxValue,ErrorMessage ="Price must be greater then 0")]
-            public string Price{get;init;}
+            public decimal Price{get;init;}
 
         }
 
