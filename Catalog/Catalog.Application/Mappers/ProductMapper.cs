@@ -100,7 +100,7 @@ namespace Catalog.Application.Mappers
                 ImageFile=dto.ImageFile,
                 Price=dto.Price,
                 BrandId=dto.BrandId,
-                TypeId=dto.TypeId
+                TypeId=dto.TypeId   
 
             };
         }

@@ -1,16 +1,44 @@
+using System.Reflection;
+using Catalog.Application;
+using Catalog.Core;
 using Catalog.Infrastructure;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
+using MongoDB.Bson.Serialization.Serializers;
 using MongoDB.Driver;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+BsonSerializer.RegisterSerializer(new GuidSerializer(BsonType.String));
+BsonSerializer.RegisterSerializer(new DateTimeOffsetSerializer(BsonType.String));
+
 // Add services to the container.
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+
+//Add swagger Services
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+//Register Mediatr
+var assemblies=new Assembly[]
+{
+  Assembly.GetExecutingAssembly(),
+  typeof(GetAllBrandsHandler).Assembly  
+};
+builder.Services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(assemblies));
+ 
+//customer services
+builder.Services.AddScoped<IBrandRepository,BrandRepository>();
+builder.Services.AddScoped<ITypeRepository,TypeRepository>();
+builder.Services.AddScoped<IProductRepository,ProductRepository>();
 
 //Build strongly-typed setting
 builder.Services.Configure<DatabaseSettings>(
-    builder.Configuration.GetSection("DefaultSettings")
+    builder.Configuration.GetSection("DatabaseSettings")
 );
 
 //Register MongoClient as singleton
@@ -22,11 +50,22 @@ builder.Services.AddSingleton<IMongoClient>(sp =>
 
 var app = builder.Build();
 
+//Seed MongoDb on Startup
+using(var scope = app.Services.CreateScope())
+{
+    var options=scope.ServiceProvider.GetRequiredService<IOptions<DatabaseSettings>>();
+    await DatabaseSeeder.SeedAsync(options);
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+//Enable Swagger
+app.UseSwagger();
+app.UseSwagger();
 
 app.UseHttpsRedirection();
 
@@ -34,28 +73,5 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// var summaries = new[]
-// {
-//     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-// };
-
-// app.MapGet("/weatherforecast", () =>
-// {
-//     var forecast =  Enumerable.Range(1, 5).Select(index =>
-//         new WeatherForecast
-//         (
-//             DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-//             Random.Shared.Next(-20, 55),
-//             summaries[Random.Shared.Next(summaries.Length)]
-//         ))
-//         .ToArray();
-//     return forecast;
-// })
-// .WithName("GetWeatherForecast");
-
 app.Run();
 
-// record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-// {
-//     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-// }
