@@ -12,7 +12,7 @@ services:
   catalog:
     build:
       context: .
-      dockerfile: Catalog/Catalog.API/Dockerfile
+      dockerfile: Catalog/Catalog.Api/Dockerfile
 
     ports:
       - "8000:8080"
