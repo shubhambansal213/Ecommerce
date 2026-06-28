@@ -61,7 +61,7 @@ namespace Catalog.Api.Controllers
             return Ok(result);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(string id)
         {
             var command=new DeleteProductByIdCommand(id);

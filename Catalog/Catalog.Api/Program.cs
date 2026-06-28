@@ -65,7 +65,7 @@ if (app.Environment.IsDevelopment())
 
 //Enable Swagger
 app.UseSwagger();
-app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

@@ -30,7 +30,7 @@ namespace Catalog.Application.Handlers
             var brand=await  _productRepository.GetBrandsByIdAsync(request.BrandId);
             var type=await _productRepository.GetTypeByIdAsync(request.TypeId);
 
-             if(brand==null && type==null)
+             if(brand==null || type==null)
             {
                 throw new ApplicationException("Invalid Brand or Types");
             }

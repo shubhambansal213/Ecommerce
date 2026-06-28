@@ -7,7 +7,9 @@ namespace Catalog.Core
 {
     public class Product
     {
-        public string Id;
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id {get;set;}
 
         public string Name { get; set; }
 

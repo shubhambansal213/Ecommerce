@@ -17,7 +17,7 @@ namespace Catalog.Infrastructure
             var brands=db.GetCollection<ProductBrand>(setting.BrandCollectionName);
             var types=db.GetCollection<ProductType>(setting.TypeCollectionName);
             var products=db.GetCollection<Product>(setting.ProductCollectionName);
-
+            
             var SeedBasePath=Path.Combine("Data","SeedData");
 
             //Seed Brands
@@ -49,7 +49,7 @@ namespace Catalog.Infrastructure
             //Seed Products
             if(await products.CountDocumentsAsync(_ => true) == 0)
             {
-                var productData=await File.ReadAllTextAsync(Path.Combine("Data","SeedData"));
+                var productData=await File.ReadAllTextAsync(Path.Combine(SeedBasePath,"products.json"));
                 var productList=JsonSerializer.Deserialize<List<Product>>(productData);
                 foreach(var product in productList)
                 {
@@ -57,12 +57,12 @@ namespace Catalog.Infrastructure
                      product.Id=null;
 
                     //Default created date if not set
-                    if (product.CreatedDate == null)
+                    if (product.CreatedDate == default)
                     {
-                         product.CreatedDate=DateTime.UtcNow;
+                         product.CreatedDate=DateTimeOffset.UtcNow;
                     }
-                    await products.InsertManyAsync(productList);
                 }
+                await products.InsertManyAsync(productList);
             }
         }
     }

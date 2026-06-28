@@ -9,9 +9,9 @@ FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG configuration=Release
 WORKDIR /src
 COPY ["Catalog/Catalog.Api/Catalog.Api.csproj", "Catalog/Catalog.Api/"]
-COPY ["Catalog/Catalog.Api/Catalog.Application.csproj", "Catalog/Catalog.Application/"]
-COPY ["Catalog/Catalog.Api/Catalog.Core.csproj", "Catalog/Catalog.Core/"]
-COPY ["Catalog/Catalog.Api/Catalog.Infrastructure.csproj", "Catalog/Catalog.Infrastructure/"]
+COPY ["Catalog/Catalog.Application/Catalog.Application.csproj", "Catalog/Catalog.Application/"]
+COPY ["Catalog/Catalog.Core/Catalog.Core.csproj", "Catalog/Catalog.Core/"]
+COPY ["Catalog/Catalog.Infrastructure/Catalog.Infrastructure.csproj", "Catalog/Catalog.Infrastructure/"]
 
 RUN dotnet restore "Catalog/Catalog.Api/Catalog.Api.csproj"
 COPY . .

@@ -105,12 +105,12 @@ namespace Catalog.Application.Mappers
             };
         }
 
-        public static CreateProductDto ToCommand(this CreateProductDto dto)
+        public static CreateProductCommand ToCommand(this CreateProductDto dto)
         {
-            return new CreateProductDto
+            return new CreateProductCommand
             {
               Name=dto.Name,
-              Sumary=dto.Sumary,  
+              Summary=dto.Sumary,
               Description=dto.Description,
               ImageFile=dto.ImageFile,
               BrandId=dto.BrandId,

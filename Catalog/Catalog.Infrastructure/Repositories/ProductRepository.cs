@@ -14,7 +14,7 @@ namespace Catalog.Infrastructure
         private readonly IMongoCollection<Product> _products;
         public ProductRepository(IConfiguration config)
         {
-            var client=new MongoClient(config["DatabaseSettings : ConnectionString"]);
+            var client=new MongoClient(config["DatabaseSettings:ConnectionString"]);
             var db= client.GetDatabase(config["DatabaseSettings:DatabaseName"]);
             _brands=db.GetCollection<ProductBrand>(config["DatabaseSettings:BrandCollectionName"]);
             _types=db.GetCollection<ProductType>(config["DatabaseSettings:TypeCollectionName"]);
@@ -58,7 +58,7 @@ namespace Catalog.Infrastructure
             }
              if (!string.IsNullOrEmpty(catalogSpecParams.TYpeId))
             {
-                filter&=builder.Eq(p=>p.Brand.Id,catalogSpecParams.TYpeId);
+                filter&=builder.Eq(p=>p.Type.Id,catalogSpecParams.TYpeId);
             }
 
             var totalIteam=await _products.CountDocumentsAsync(filter);
